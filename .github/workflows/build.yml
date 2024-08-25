@@ -37,7 +37,9 @@ jobs:
 
     - name: Make install script
       run: |
+        VERSION=${{ env.version }}
         SEMVER=${VERSION:1}
+        echo "${SEMVER}"
         cat <<EOF > tools/chocolateyinstall.ps1
         \$ErrorActionPreference = 'Stop';
         Install-ChocolateyPackage -packageName 'glazewm' -FileType exe -SilentArgs '/silent' -Url 'https://github.com/glzr-io/glazewm/releases/download/${{ env.version }}/glazewm-${SEMVER}.exe' -checksum '${{ env.hash }}' -checksumType 'sha256'
