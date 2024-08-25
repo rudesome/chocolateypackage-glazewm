@@ -1,0 +1,117 @@
+name: Package GlazeWM
+
+concurrency: ci-build
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - ".github/**"
+  schedule:
+    - cron:  '00 9 * * *'
+  workflow_dispatch:
+
+jobs:
+  update_version:
+    name: Update version
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+
+    - name: Get latest version
+      run: |
+        VER=$(curl https://api.github.com/repos/glzr-io/glazewm/releases/latest | jq '.["tag_name"]' | tr -d \")
+        echo "version=$VER" >> $GITHUB_ENV
+
+    - name: Get file hash
+      run: |
+        VERSION=${{ env.version }}
+        wget --no-verbose https://github.com/glzr-io/glazewm/releases/download/${{ env.version }}/glazewm-${{ env.version }}.exe
+        HASH=$(sha256sum glazewm-${{ env.version }}.exe | awk "{print \$1}")
+        echo "hash=$HASH" >> $GITHUB_ENV
+
+    - name: Make install script
+      run: |
+        cat <<EOF > tools/chocolateyinstall.ps1
+        \$ErrorActionPreference = 'Stop';
+        Install-ChocolateyPackage -packageName 'glazewm' -FileType exe -SilentArgs '/silent' -Url 'https://github.com/glzr-io/glazewm/releases/download/${{ env.version }}/glazewm-${{ env.version }}.exe' -checksum '${{ env.hash }}' -checksumType 'sha256'
+        EOF
+
+    - name: Make nuspec
+      run: |
+        cat << EOF > glazewm.nuspec
+        <?xml version="1.0" encoding="utf-8"?>
+        <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+          <metadata>
+            <id>glazewm</id>
+            <version>${{ env.version }}</version>
+            <packageSourceUrl>https://github.com/rudesome/chocolateypackage-glazewm</packageSourceUrl>
+            <owners>rudesome</owners>
+            <title>GlazeWM</title>
+            <authors>glzr.io</authors>
+            <projectUrl>https://github.com/glzr-io/glazewm</projectUrl>
+            <iconUrl>https://raw.githubusercontent.com/glzr-io/glazewm/main/resources/assets/logo.svg</iconUrl>
+            <licenseUrl>https://raw.githubusercontent.com/glzr-io/glazewm/main/LICENSE.md</licenseUrl>
+            <requireLicenseAcceptance>true</requireLicenseAcceptance>
+            <projectSourceUrl>https://github.com/glzr-io/glazewm</projectSourceUrl>
+            <bugTrackerUrl>https://github.com/glzr-io/glazewm/issues</bugTrackerUrl>
+            <tags>rust, window-manager, tiling-window-manager i3wm</tags>
+            <summary>GlazeWM is a tiling window manager for Windows inspired by i3wm.</summary>
+            <description>
+              GlazeWM lets you easily organize windows and adjust their layout on the fly by using keyboard-driven commands.
+            </description>
+            <releaseNotes>
+
+            Release notes found here: https://github.com/glzr-io/glazewm/releases/tag/${{ env.version }}
+
+            </releaseNotes>
+          </metadata>
+          <files>
+            <file src="tools\**" target="tools" />
+          </files>
+        </package>
+        EOF
+
+    - name: Remove EXE
+      run: rm glazewm*.exe
+
+    - name: Write latest version to file
+      run: echo -n ${{ env.version }} > VERSION
+
+    - name: Commit and push changes
+      id: push
+      uses: devops-infra/action-commit-push@v0.9.2
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        commit_message: Updated to version ${{ env.version }}
+
+  build:
+    name: Chocolatey Build
+    runs-on: windows-latest
+    timeout-minutes: 15
+    needs: update_version
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 
+
+    - name: Choco Package 
+      uses: crazy-max/ghaction-chocolatey@v3.0.0
+      with:
+        args: pack 
+
+    - name: Rename file
+      run: mv glazewm*.nupkg glazewm.nupkg
+
+    - name: Choco add API key
+      uses: crazy-max/ghaction-chocolatey@v3.0.0
+      with:
+        args: apikey -y -k ${{ secrets.CHOCO_TOKEN }} --source https://push.chocolatey.org/
+
+    - name: Push to Chocolatey
+      uses: crazy-max/ghaction-chocolatey@v3.0.0
+      with:
+        args: push glazewm.nupkg -s https://push.chocolatey.org/
