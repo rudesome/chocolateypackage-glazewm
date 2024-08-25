@@ -38,12 +38,12 @@ jobs:
       run: |
         cat <<EOF > tools/chocolateyinstall.ps1
         \$ErrorActionPreference = 'Stop';
-        $params = @{
+        \$params = @{
           packageName = 'glazewm'
-          FileType = 'exe'
-          SilentArgs = '/silent'
-          Url = 'https://github.com/glzr-io/glazewm/releases/download/${{ env.version }}/glazewm-${{ env.semver }}.exe' 
-          checksum = '${{ env.hash }}' 
+          FileType    = 'exe'
+          SilentArgs  = '/silent'
+          Url         = 'https://github.com/glzr-io/glazewm/releases/download/${{ env.version }}/glazewm-${{ env.semver }}.exe' 
+          checksum    = '${{ env.hash }}' 
           hecksumType = 'sha255'
         }
         Install-ChocolateyPackage @params
