@@ -26,13 +26,12 @@ jobs:
       run: |
         VER=$(curl https://api.github.com/repos/glzr-io/glazewm/releases/latest | jq '.["tag_name"]' | tr -d \")
         echo "version=$VER" >> $GITHUB_ENV
+        echo "semver=${VER:1}" >> $GITHUB_ENV
 
     - name: Get file hash
       run: |
-        VERSION=${{ env.version }}
-        SEMVER=${VERSION:1}
-        wget --no-verbose https://github.com/glzr-io/glazewm/releases/download/${{ env.version }}/glazewm-${SEMVER}.exe
-        HASH=$(sha256sum glazewm-${{ env.version }}.exe | awk "{print \$1}")
+        wget --no-verbose https://github.com/glzr-io/glazewm/releases/download/${{ env.version }}/glazewm-${{ env.semver }}.exe
+        HASH=$(sha256sum glazewm-${{ env.semver }}.exe | awk "{print \$1}")
         echo "hash=$HASH" >> $GITHUB_ENV
 
     - name: Make install script
@@ -42,7 +41,7 @@ jobs:
         echo "${SEMVER}"
         cat <<EOF > tools/chocolateyinstall.ps1
         \$ErrorActionPreference = 'Stop';
-        Install-ChocolateyPackage -packageName 'glazewm' -FileType exe -SilentArgs '/silent' -Url 'https://github.com/glzr-io/glazewm/releases/download/${{ env.version }}/glazewm-${SEMVER}.exe' -checksum '${{ env.hash }}' -checksumType 'sha256'
+        Install-ChocolateyPackage -packageName 'glazewm' -FileType exe -SilentArgs '/silent' -Url 'https://github.com/glzr-io/glazewm/releases/download/${{ env.version }}/glazewm-${{ env.semver }}.exe' -checksum '${{ env.hash }}' -checksumType 'sha256'
         EOF
 
     - name: Make nuspec
@@ -52,7 +51,7 @@ jobs:
         <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
           <metadata>
             <id>glazewm</id>
-            <version>${{ env.version }}</version>
+            <version>${{ env.semver }}</version>
             <packageSourceUrl>https://github.com/rudesome/chocolateypackage-glazewm</packageSourceUrl>
             <owners>rudesome</owners>
             <title>GlazeWM</title>
