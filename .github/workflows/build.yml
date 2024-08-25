@@ -30,7 +30,7 @@ jobs:
     - name: Get file hash
       run: |
         VERSION=${{ env.version }}
-        wget --no-verbose https://github.com/glzr-io/glazewm/releases/download/${{ env.version }}/glazewm-${{ env.version }}.exe
+        wget --no-verbose https://github.com/glzr-io/glazewm/releases/download/${{ env.version }}/glazewm-${{ env.version//v/ }}.exe
         HASH=$(sha256sum glazewm-${{ env.version }}.exe | awk "{print \$1}")
         echo "hash=$HASH" >> $GITHUB_ENV
 
