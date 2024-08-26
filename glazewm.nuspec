@@ -13,7 +13,7 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <projectSourceUrl>https://github.com/glzr-io/glazewm</projectSourceUrl>
     <bugTrackerUrl>https://github.com/glzr-io/glazewm/issues</bugTrackerUrl>
-    <tags>rust, window-manager, tiling-window-manager i3wm</tags>
+    <tags>rust window-manager tiling-window-manager i3wm</tags>
     <summary>GlazeWM is a tiling window manager for Windows inspired by i3wm.</summary>
     <description>
       GlazeWM lets you easily organize windows and adjust their layout on the fly by using keyboard-driven commands.
