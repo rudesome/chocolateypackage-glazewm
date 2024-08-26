@@ -15,13 +15,15 @@
 
       perSystem = { system, pkgs, inputs, ... }:
         let
-          inherit (pkgs) fetchFromGitHub lib alejandra rustPlatform;
-          inherit (rustPlatform) buildRustPackage;
+          inherit (pkgs)
+            trunk rustup fetchFromGitHub lib alejandra rustPlatform pkg-config glib gtk3;
+          inherit (rustPlatform)
+            buildRustPackage cargoCheckHook;
           pname = "glazewm";
           version = "v3.1.1";
         in
         {
-          packages.default = buildRustPackage {
+          packages.default = buildRustPackage rec {
             inherit pname version;
 
             src = fetchFromGitHub {
@@ -30,8 +32,37 @@
               rev = version;
               hash = "sha256-gSbMnb/mW+0+p+NPvnfV72xzJWzz9ziyj4DF1bjivVo=";
             };
-
             cargoHash = "sha256-WbPWPA0dNt5hOvVxQ7l7SAFk5Quo8LiGxkozdBfoqzU=";
+
+            nativeBuildInputs = [ pkg-config ];
+
+            buildInputs = [
+              glib
+              gtk3
+              trunk
+              rustup
+            ];
+
+            nativeCheckInputs = [
+              cargoCheckHook
+            ];
+
+            buildPhase = ''
+              echo "<<<<<<||BUILDPHASE||>>>>>>>"
+            '';
+
+            separateDebugInfo = false;
+
+            doCheck = true;
+
+            #postPatch = ''
+            #substituteInPlace $out/packages/wm/ --subst-var-by path = src\\lib.rs '${out}\packages\\lib.rs'
+            #'';
+
+            #cargoLock = {
+            #lockFile = "${src}/Cargo.lock";
+            #allowBuiltinFetchGit = false;
+            #};
 
             meta = with lib; {
               description = "GlazeWM is a tiling window manager for Windows inspired by i3wm.";
@@ -47,6 +78,9 @@
             mkShell {
               buildInputs = with pkgs; [
                 powershell
+                rust-analyzer
+                rustfmt
+                clipp
               ];
             };
           formatter = alejandra;
