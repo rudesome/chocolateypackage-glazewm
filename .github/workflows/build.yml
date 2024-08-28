@@ -98,6 +98,9 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         commit_message: Updated to version ${{ env.version }}
 
+    - name: test
+      run: echo ${{ env.updated }}
+
   build:
     name: Chocolatey Build
     runs-on: windows-latest
