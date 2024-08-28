@@ -27,6 +27,7 @@ jobs:
         VER=$(curl https://api.github.com/repos/glzr-io/glazewm/releases/latest | jq '.["tag_name"]' | tr -d \")
         echo "version=$VER" >> $GITHUB_ENV
         echo "semver=${VER:1}" >> $GITHUB_ENV
+        grep -Fxq ${{ env.version }} ./VERSION; [ $? -eq 0 ] && echo "updated=true" >> $GITHUB_ENV || echo "updated=false" >> $GITHUB_ENV
 
     - name: Get file hash
       run: |
@@ -114,12 +115,12 @@ jobs:
     - name: Rename file
       run: mv glazewm*.nupkg glazewm.nupkg
 
-    - name: Choco add API key
-      uses: crazy-max/ghaction-chocolatey@v3.0.0
-      with:
-        args: apikey -y -k ${{ secrets.CHOCO_TOKEN }} --source https://push.chocolatey.org/
+    #- name: Choco add API key
+      #uses: crazy-max/ghaction-chocolatey@v3.0.0
+      #with:
+        #args: apikey -y -k ${{ secrets.CHOCO_TOKEN }} --source https://push.chocolatey.org/
 
-    - name: Push to Chocolatey
-      uses: crazy-max/ghaction-chocolatey@v3.0.0
-      with:
-        args: push glazewm.nupkg -s https://push.chocolatey.org/
+    #- name: Push to Chocolatey
+      #uses: crazy-max/ghaction-chocolatey@v3.0.0
+      #with:
+        #args: push glazewm.nupkg -s https://push.chocolatey.org/
