@@ -130,7 +130,8 @@ jobs:
       with:
         args: apikey -y -k ${{ secrets.CHOCO_TOKEN }} --source https://push.chocolatey.org/
 
-    #- name: Push to Chocolatey
-      #uses: crazy-max/ghaction-chocolatey@v3.0.0
-      #with:
-        #args: push glazewm.nupkg -s https://push.chocolatey.org/
+    - name: Push to Chocolatey
+      if: ${{ env.updated }}
+      uses: crazy-max/ghaction-chocolatey@v3.0.0
+      with:
+        args: push glazewm.nupkg -s https://push.chocolatey.org/
