@@ -27,13 +27,6 @@ jobs:
         VER=$(curl https://api.github.com/repos/glzr-io/glazewm/releases/latest | jq '.["tag_name"]' | tr -d \")
         echo "version=$VER" >> $GITHUB_ENV
         echo "semver=${VER:1}" >> $GITHUB_ENV
-        if grep -Fxq $VER ./VERSION
-        then
-            echo "updated=false" >> $GITHUB_ENV
-
-        else
-            echo "updated=true" >> $GITHUB_ENV
-        fi
 
     - name: Get file hash
       run: |
@@ -103,9 +96,6 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         commit_message: Updated to version ${{ env.version }}
-
-    - name: test
-      run: echo ${{ env.updated }}
 
   build:
     name: Chocolatey Build
