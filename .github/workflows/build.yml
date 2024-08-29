@@ -5,7 +5,7 @@ concurrency: ci-build
 on:
   push:
     branches:
-      - main
+      - master
     paths-ignore:
       - ".github/**"
   schedule:
