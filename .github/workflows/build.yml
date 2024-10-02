@@ -30,8 +30,8 @@ jobs:
 
     - name: Get file hash
       run: |
-        wget --no-verbose https://github.com/glzr-io/glazewm/releases/download/${{ env.version }}/glazewm-${{ env.semver }}.exe
-        HASH=$(sha256sum glazewm-${{ env.semver }}.exe | awk "{print \$1}")
+        wget --no-verbose https://github.com/glzr-io/glazewm/releases/download/${{ env.version }}/standalone-glazewm-${{ env.version }}-x64.msi
+        HASH=$(sha256sum standalone-glazewm-${{ env.version }}.msi | awk "{print \$1}")
         echo "hash=$HASH" >> $GITHUB_ENV
 
     - name: Make install script
@@ -39,12 +39,12 @@ jobs:
         cat <<EOF > tools/chocolateyinstall.ps1
         \$ErrorActionPreference = 'Stop';
         \$params = @{
-          packageName  = 'glazewm'
-          FileType     = 'exe'
-          SilentArgs   = '/silent'
-          Url          = 'https://github.com/glzr-io/glazewm/releases/download/${{ env.version }}/glazewm-${{ env.semver }}.exe' 
-          checksum     = '${{ env.hash }}' 
-          checksumType = 'sha256'
+          packageName    = 'glazewm'
+          FileType       = 'msi'
+          SilentArgs     = '/qn /norestart'
+          Url64bit       = 'https://github.com/glzr-io/glazewm/releases/download/${{ env.version }}/standalone-glazewm-${{ env.version }}-x64.msi'
+          checksum64     = '${{ env.hash }}' 
+          checksumType64 = 'sha256'
         }
         Install-ChocolateyPackage @params
         EOF
@@ -85,7 +85,7 @@ jobs:
         EOF
 
     - name: Remove EXE
-      run: rm glazewm*.exe
+      run: rm glazewm*.msi
 
     - name: Write latest version to file
       run: echo -n ${{ env.version }} > VERSION
