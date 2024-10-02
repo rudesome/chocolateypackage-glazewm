@@ -31,7 +31,7 @@ jobs:
     - name: Get file hash
       run: |
         wget --no-verbose https://github.com/glzr-io/glazewm/releases/download/${{ env.version }}/standalone-glazewm-${{ env.version }}-x64.msi
-        HASH=$(sha256sum standalone-glazewm-${{ env.version }}.msi | awk "{print \$1}")
+        HASH=$(sha256sum standalone-glazewm-${{ env.version }}-x64.msi | awk "{print \$1}")
         echo "hash=$HASH" >> $GITHUB_ENV
 
     - name: Make install script
