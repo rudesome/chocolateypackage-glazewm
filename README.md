@@ -5,7 +5,7 @@ GlazeWM is a tiling window manager for Windows inspired by i3wm.
 
 ## Changes (chocolatey package)
 
-Version 3.1.1 was still with the EXE installer (included Zebar).
+Version 3.1.1 was still with the EXE installer (included Zebar). <br>
 From Version >3.3.0 the author also published a MSI standalone package which only includes GlazeWM.
 
 ---
