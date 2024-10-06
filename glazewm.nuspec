@@ -17,6 +17,9 @@
     <summary>GlazeWM is a tiling window manager for Windows inspired by i3wm.</summary>
     <description>
       GlazeWM lets you easily organize windows and adjust their layout on the fly by using keyboard-driven commands.
+
+      This package uses the standalone MSI.
+      The Zebar integration has its own chocolatey package: https://community.chocolatey.org/packages/zebar
     </description>
     <releaseNotes>
 
