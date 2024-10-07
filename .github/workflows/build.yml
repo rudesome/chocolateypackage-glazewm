@@ -16,6 +16,8 @@ jobs:
   update_version:
     name: Update version
     runs-on: ubuntu-latest
+    outputs:
+      updated: ${{ steps.check-if-update.outputs.updated }}
     timeout-minutes: 10
 
     steps:
@@ -27,6 +29,17 @@ jobs:
         VER=$(curl https://api.github.com/repos/glzr-io/glazewm/releases/latest | jq '.["tag_name"]' | tr -d \")
         echo "version=$VER" >> $GITHUB_ENV
         echo "semver=${VER:1}" >> $GITHUB_ENV
+
+    - name: Check if version is updated
+      id: check-if-update
+      run: |
+        if [ "$(cat version)" = ${{ env.version }} ]; then 
+          echo "version has not been changed"
+          echo "updated=0" >> $GITHUB_OUTPUT
+        else
+          echo "version has been changed"
+          echo "updated=1" >> $GITHUB_OUTPUT
+        fi
 
     - name: Get file hash
       run: |
@@ -121,10 +134,12 @@ jobs:
 
     - name: Choco add API key
       uses: crazy-max/ghaction-chocolatey@v3.0.0
+      if: needs.update_version.outputs.updated 
       with:
         args: apikey -y -k ${{ secrets.CHOCO_TOKEN }} --source https://push.chocolatey.org/
 
     - name: Push to Chocolatey
       uses: crazy-max/ghaction-chocolatey@v3.0.0
+      if: needs.update_version.outputs.updated 
       with:
         args: push glazewm.nupkg -s https://push.chocolatey.org/
