@@ -33,12 +33,12 @@ jobs:
     - name: Check if version is updated
       id: check-if-update
       run: |
-        if [ "$(cat version)" = ${{ env.version }} ]; then 
-          echo "version has not been changed"
-          echo "updated=0" >> $GITHUB_OUTPUT
-        else
+        if [ "$(cat ./VERSION)" != ${{ env.version }} ]; then 
           echo "version has been changed"
           echo "updated=1" >> $GITHUB_OUTPUT
+        else
+          echo "version has not been changed"
+          echo "updated=0" >> $GITHUB_OUTPUT
         fi
 
     - name: Get file hash
