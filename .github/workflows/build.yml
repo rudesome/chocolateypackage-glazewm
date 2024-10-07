@@ -35,10 +35,10 @@ jobs:
       run: |
         if [ "$(cat ./VERSION)" != ${{ env.version }} ]; then 
           echo "version has been changed"
-          echo "updated=1" >> $GITHUB_OUTPUT
+          echo "updated=true" >> $GITHUB_OUTPUT
         else
           echo "version has not been changed"
-          echo "updated=0" >> $GITHUB_OUTPUT
+          echo "updated=false" >> $GITHUB_OUTPUT
         fi
 
     - name: Get file hash
@@ -134,12 +134,12 @@ jobs:
 
     - name: Choco add API key
       uses: crazy-max/ghaction-chocolatey@v3.0.0
-      if: needs.update_version.outputs.updated 
+      if: needs.update_version.outputs.updated == 'true'
       with:
         args: apikey -y -k ${{ secrets.CHOCO_TOKEN }} --source https://push.chocolatey.org/
 
     - name: Push to Chocolatey
       uses: crazy-max/ghaction-chocolatey@v3.0.0
-      if: needs.update_version.outputs.updated 
+      if: needs.update_version.outputs.updated == 'true'
       with:
         args: push glazewm.nupkg -s https://push.chocolatey.org/
