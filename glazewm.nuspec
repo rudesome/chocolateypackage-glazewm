@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
     <id>glazewm</id>
-    <version>3.5.0</version>
+    <version>3.6.0</version>
     <packageSourceUrl>https://github.com/rudesome/chocolateypackage-glazewm</packageSourceUrl>
     <owners>rudesome</owners>
     <title>GlazeWM</title>
@@ -23,7 +23,7 @@
     </description>
     <releaseNotes>
 
-    Release notes found here: https://github.com/glzr-io/glazewm/releases/tag/v3.5.0
+    Release notes found here: https://github.com/glzr-io/glazewm/releases/tag/v3.6.0
 
     </releaseNotes>
   </metadata>
