@@ -143,3 +143,6 @@ jobs:
       if: needs.update_version.outputs.updated == 'true'
       with:
         args: push glazewm.nupkg -s https://push.chocolatey.org/
+        
+    # create dummy trigger to prevent disabling the workflow by github
+    - uses: gautamkrishnar/keepalive-workflow@master
