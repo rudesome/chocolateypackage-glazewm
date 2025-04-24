@@ -145,4 +145,4 @@ jobs:
         args: push glazewm.nupkg -s https://push.chocolatey.org/
         
     # create dummy trigger to prevent disabling the workflow by github
-    - uses: gautamkrishnar/keepalive-workflow@master
+    - uses: gautamkrishnar/keepalive-workflow@v7.1.16
