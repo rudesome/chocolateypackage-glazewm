@@ -3,8 +3,8 @@ $params = @{
   packageName    = 'glazewm'
   FileType       = 'msi'
   SilentArgs     = '/qn /norestart'
-  Url64bit       = 'https://github.com/glzr-io/glazewm/releases/download/v3.8.1/standalone-glazewm-v3.8.1-x64.msi'
-  checksum64     = '2fe716634e7c78b1fbe1207697a8a8207c6b4b902f4a5c65d100abf5bda796d5' 
+  Url64bit       = 'https://github.com/glzr-io/glazewm/releases/download/v3.9.0/standalone-glazewm-v3.9.0-x64.msi'
+  checksum64     = '70fdfc73cea6a042e3a552032bd55b29ef239ff317cbc361fb118ed904b3fc2d' 
   checksumType64 = 'sha256'
 }
 Install-ChocolateyPackage @params
