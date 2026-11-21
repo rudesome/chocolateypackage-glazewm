@@ -22,7 +22,7 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Get latest version
       run: |
@@ -120,12 +120,12 @@ jobs:
     needs: update_version
     steps:
     - name: Checkout repo
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         ref: master
 
     - name: Choco Package 
-      uses: crazy-max/ghaction-chocolatey@v3.0.0
+      uses: crazy-max/ghaction-chocolatey@dfdcf5bba9c0a16358a21c13a06ec5c89024b3ac # v4.1.0
       with:
         args: pack 
 
@@ -133,13 +133,13 @@ jobs:
       run: mv glazewm*.nupkg glazewm.nupkg
 
     - name: Choco add API key
-      uses: crazy-max/ghaction-chocolatey@v3.0.0
+      uses: crazy-max/ghaction-chocolatey@dfdcf5bba9c0a16358a21c13a06ec5c89024b3ac # v4.1.0
       if: needs.update_version.outputs.updated == 'true'
       with:
         args: apikey -y -k ${{ secrets.CHOCO_TOKEN }} --source https://push.chocolatey.org/
 
     - name: Push to Chocolatey
-      uses: crazy-max/ghaction-chocolatey@v3.0.0
+      uses: crazy-max/ghaction-chocolatey@dfdcf5bba9c0a16358a21c13a06ec5c89024b3ac # v4.1.0
       if: needs.update_version.outputs.updated == 'true'
       with:
         args: push glazewm.nupkg -s https://push.chocolatey.org/
